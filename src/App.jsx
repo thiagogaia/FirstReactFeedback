@@ -14,10 +14,8 @@ function App() {
       <div className={styles.wrapper}>
         <Sidebar />
         <main>
-          <Post 
-        author="ThiGato"
-        content="This is the content of the post"
-      />
+          <Post />
+          <Post />
         </main>
       </div>
     </div>
