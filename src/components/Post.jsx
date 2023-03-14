@@ -1,28 +1,42 @@
 import styles from './Post.module.css'
 import {Comment} from './Comment'
-export function Post() {
+import { Avatar } from './Avatar'
+
+import { format, formatDistanceToNow } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
+export function Post(props) {
+  const publishedFormat = format(props.publishedAt, "d 'de' LLLL '`as' HH:mm'h'", {
+    locale: ptBR
+  })
+
+  const publishedRelativeToNow = formatDistanceToNow(props.publishedAt, {
+    locale: ptBR,
+    addSuffix: true,
+  })
   return (
     <article className={styles.post}>
       <header>
         <div className={styles.author}>
-          <img className={styles.avatar} src="https://github.com/thiagogaia.png" alt="Thiago Gaia" />
+          <Avatar src={props.author.avatarUrl} alt={props.author.name} />
           <div className={styles.authorInfo}>
-            <strong>ThiGato</strong>
-            <span>Web Developer</span>
+            <strong>{props.author.name}</strong>
+            <span>{props.author.role}</span>
           </div>
         </div>
 
-        <time title="11 de julho às 07:22" dateTime="2022-07-22 07:22:22">Publicado há 1h</time>
+        <time title={publishedFormat} dateTime={props.publishedAt.toISOString()}>
+          {publishedRelativeToNow}
+        </time>
       </header>
 
       <div className={styles.content}>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-          Necessitatibus voluptatum excepturi, est quisquam enim perferendis, 
-          alias maxime repellat, aut tenetur magni corporis ab debitis molestias 
-          magnam eligendi id. Nisi, similique?
-        </p>
-        <p><a href="">#pah</a></p>
+        {props.content.map(line => {
+          if (line.type === 'paragraph') {
+            return <p>{line.content}</p>
+          } else if (line.type === 'link') {
+            return <p><a href="#">{line.content}</a></p>
+          }
+        })}
       </div>
 
       <form className={styles.commentForm}>
